@@ -88,6 +88,13 @@ std::vector<double> prolongate(const std::vector<double>& e_coarse, int n_coarse
     return e_fine;
 }
 
+void solve_exact(std::vector<double>& e, const std::vector<double>& r, int n_coarse, double h_coarse) {
+    std::fill(e.begin(), e.end(), 0.0);
+    for (int k = 0; k < 1000; k++) {
+        gauss_seidel(e, r, n_coarse, h_coarse);
+    }
+}
+
 int main(void) {
     int n = 8;   // numero de intervalos
     double L = 1.0; // dominio [0, L]
