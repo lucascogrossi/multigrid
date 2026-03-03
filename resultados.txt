@@ -1,0 +1,55 @@
+k = 100
+
+==========================
+Jacobi:
+
+residuo final: 0.000916606
+
+Solucao aproximada:
+u(0) = 0
+u(0.125) = 0.0546695
+u(0.25) = 0.0937168
+u(0.375) = 0.117144
+u(0.5) = 0.124953
+u(0.625) = 0.117144
+u(0.75) = 0.0937168
+u(0.875) = 0.0546695
+u(1) = 0
+
+==========================
+Gauss Seidel:
+
+residuo final: 3.88038e-07
+
+Solucao aproximada:
+u(0) = 0
+u(0.125) = 0.0546875
+u(0.25) = 0.09375
+u(0.375) = 0.117187
+u(0.5) = 0.125
+u(0.625) = 0.117187
+u(0.75) = 0.09375
+u(0.875) = 0.0546875
+u(1) = 0
+
+==========================
+Jacobi amortecido:
+
+residuo final: 0.0137565
+
+Solucao aproximada:
+u(0) = 0
+u(0.125) = 0.0544173
+u(0.25) = 0.0932508
+u(0.375) = 0.116535
+u(0.5) = 0.124294
+u(0.625) = 0.116535
+u(0.75) = 0.0932508
+u(0.875) = 0.0544173
+u(1) = 0
+
+Nota: ω-Jacobi convergiu menos que Jacobi normal
+      ω = 2/3 eh mais lento para convergir globalmente
+      mas eh melhor para elimizar erros de alta freq.
+      (valor otimo para suavizacao)
+
