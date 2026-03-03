@@ -71,6 +71,22 @@ std::vector<double> restrict_grid(const std::vector<double>& r, int n) {
     return r_coarse;
 }
 
+std::vector<double> prolongate(const std::vector<double>& e_coarse, int n_coarse) {
+    // grid fino tem n_coarse*2 intervalos
+    int n_fine = n_coarse * 2;
+    std::vector<double> e_fine(n_fine + 1, 0.0);
+
+    for (int j = 0; j < n_coarse; j++) {
+        // pontos pares (copia direto)
+        e_fine[2*j] = e_coarse[j];
+        // pontos impares  (media dos vizinhos; interpolacao linear entre 2 pontos)
+        e_fine[2*j+1] = (e_coarse[j] + e_coarse[j+1]) / 2.0;
+    }
+    // copia o ultimo ponto
+    e_fine[n_fine] = e_coarse[n_coarse];
+
+    return e_fine;
+}
 
 int main(void) {
     int n = 8;   // numero de intervalos
