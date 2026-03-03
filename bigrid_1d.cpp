@@ -70,7 +70,7 @@ int main(void) {
         // jacobi(u, f, n, h);
         // gauss_seidel(u, f, n, h);
         // jacobi_amortecido(u, f, n, h);
-        sor(u, f, n, h, 1.0);
+        sor(u, f, n, h, 1.9);
         // std::cout << "residuo: " << residual(u, f, n, h) << std::endl;
     }
     std::cout << "residuo final: " << residual(u, f, n, h) << std::endl;

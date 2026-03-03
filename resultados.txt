@@ -48,8 +48,55 @@ u(0.75) = 0.0932508
 u(0.875) = 0.0544173
 u(1) = 0
 
-Nota: ω-Jacobi convergiu menos que Jacobi normal
+Nota: ω-Jacobi convergiu menos que Jacobi normal.
       ω = 2/3 eh mais lento para convergir globalmente
       mas eh melhor para elimizar erros de alta freq.
       (valor otimo para suavizacao)
 
+===================
+SOR, omega = 1
+
+residuo final: 3.88038e-07
+
+Solucao aproximada:
+u(0) = 0
+u(0.125) = 0.0546875
+u(0.25) = 0.09375
+u(0.375) = 0.117187
+u(0.5) = 0.125
+u(0.625) = 0.117187
+u(0.75) = 0.09375
+u(0.875) = 0.0546875
+u(1) = 0
+
+==============
+SOR, omega = 1.5
+residuo final: 0
+
+Solucao aproximada:
+u(0) = 0
+u(0.125) = 0.0546875
+u(0.25) = 0.09375
+u(0.375) = 0.117188
+u(0.5) = 0.125
+u(0.625) = 0.117188
+u(0.75) = 0.09375
+u(0.875) = 0.0546875
+u(1) = 0
+
+
+================
+SOR, omega = 1.9
+
+residuo final: 0.000204428
+
+Solucao aproximada:
+u(0) = 0
+u(0.125) = 0.0546868
+u(0.25) = 0.0937493
+u(0.375) = 0.117188
+u(0.5) = 0.125002
+u(0.625) = 0.117189
+u(0.75) = 0.0937513
+u(0.875) = 0.0546881
+u(1) = 0
