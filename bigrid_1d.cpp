@@ -1,0 +1,78 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+double residual(const std::vector<double>& u, const std::vector<double>& f, int n, double h) {
+    double res = 0.0;
+    for (int i = 1; i < n; i++) {
+        double Au_i = (-u[i-1] + 2*u[i] - u[i+1]) / (h*h);
+        double r_i = f[i] - Au_i;
+        res += r_i * r_i;
+    }
+    return sqrt(res);
+}
+
+void jacobi(std::vector<double>& u, const std::vector<double>& f, int n, double h) {
+    std::vector<double> u_new(n + 1, 0.0);
+
+    for (int i = 1; i < n; i++) {
+        u_new[i] = (u[i-1] + u[i+1]) / 2.0 + (h*h / 2.0) * f[i];
+    }
+    u = u_new;
+}
+
+void jacobi_amortecido(std::vector<double>& u, const std::vector<double>& f, int n, double h) {
+    std::vector<double> u_new(n + 1, 0.0);
+    double u_jacobi;
+    double omega = 2.0/3.0;
+
+    for (int i = 1; i < n; i++) {
+        u_jacobi = (u[i-1] + u[i+1]) / 2.0 + (h*h / 2.0) * f[i];
+        u_new[i] = u[i] + omega * (u_jacobi - u[i]);
+    }
+    u = u_new;
+}
+
+void gauss_seidel(std::vector<double>& u, const std::vector<double>& f, int n, double h) {
+    for (int i = 1; i < n; i++) {
+        u[i] = (u[i-1] + u[i+1]) / 2.0 + (h*h / 2.0) * f[i];
+    }
+}
+
+int main(void) {
+    int n = 8;   // numero de intervalos
+    double L = 1.0; // dominio [0, L]
+    double h = L / n; // distancia entre dois pontos consecutivos (tamanho do intervalo)
+
+    std::vector<double> u(n + 1, 0.0);
+    std::vector<double> f(n + 1, 0.0);
+
+    // preenche f
+    for (int i = 1; i < n; i++) {
+        double x = i * h;
+        f[i] = 1.0; // −uxx = 1
+                    // a solucao analitica exata eh:
+                    // u(x) = (x * (1 - x)) / 2
+    }
+
+    // std::cout << "h = " << h << std::endl;
+    // std::cout << "pontos interiores: " << n - 1 << std::endl;
+
+    for (int k = 0; k < 100; k++) {
+        // jacobi(u, f, n, h);
+        // gauss_seidel(u, f, n, h);
+        jacobi_amortecido(u, f, n, h);
+        // std::cout << "residuo: " << residual(u, f, n, h) << std::endl;
+    }
+    std::cout << "residuo final: " << residual(u, f, n, h) << std::endl;
+
+    std::cout << "\nSolucao aproximada:" << std::endl;
+    for (int i = 0; i <= n; i++) {
+        double x = i * h;
+        std::cout << "u(" << x << ") = " << u[i] << std::endl;
+    }
+
+    return 0;
+
+
+}
