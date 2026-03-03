@@ -39,6 +39,14 @@ void gauss_seidel(std::vector<double>& u, const std::vector<double>& f, int n, d
     }
 }
 
+// Gauss-Seidel Sobrerelaxado
+void sor(std::vector<double>& u, const std::vector<double>& f, int n, double h, double omega) {
+    for (int i = 1; i < n; i++) {
+        double u_gs = (u[i-1] + u[i+1]) / 2.0 + (h*h / 2.0) * f[i];
+        u[i] = u[i] + omega * (u_gs - u[i]);
+    }
+}
+
 int main(void) {
     int n = 8;   // numero de intervalos
     double L = 1.0; // dominio [0, L]
@@ -61,7 +69,8 @@ int main(void) {
     for (int k = 0; k < 100; k++) {
         // jacobi(u, f, n, h);
         // gauss_seidel(u, f, n, h);
-        jacobi_amortecido(u, f, n, h);
+        // jacobi_amortecido(u, f, n, h);
+        sor(u, f, n, h, 1.0);
         // std::cout << "residuo: " << residual(u, f, n, h) << std::endl;
     }
     std::cout << "residuo final: " << residual(u, f, n, h) << std::endl;
