@@ -47,6 +47,17 @@ void sor(std::vector<double>& u, const std::vector<double>& f, int n, double h, 
     }
 }
 
+void gauss_seidel_rb(std::vector<double>& u, const std::vector<double>& f, int n, double h) {
+    // vermelho: indices impares
+    for (int i = 1; i < n; i += 2) {
+        u[i] = (u[i-1] + u[i+1]) / 2.0 + (h*h / 2.0) * f[i];
+    }
+    // preto: indices pares
+    for (int i = 2; i < n; i += 2) {
+        u[i] = (u[i-1] + u[i+1]) / 2.0 + (h*h / 2.0) * f[i];
+    }
+}
+
 int main(void) {
     int n = 8;   // numero de intervalos
     double L = 1.0; // dominio [0, L]
@@ -70,7 +81,8 @@ int main(void) {
         // jacobi(u, f, n, h);
         // gauss_seidel(u, f, n, h);
         // jacobi_amortecido(u, f, n, h);
-        sor(u, f, n, h, 1.9);
+        // sor(u, f, n, h, 1.9);
+        gauss_seidel_rb(u, f, n, h);
         // std::cout << "residuo: " << residual(u, f, n, h) << std::endl;
     }
     std::cout << "residuo final: " << residual(u, f, n, h) << std::endl;
