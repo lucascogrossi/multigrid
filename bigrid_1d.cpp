@@ -58,6 +58,20 @@ void gauss_seidel_rb(std::vector<double>& u, const std::vector<double>& f, int n
     }
 }
 
+std::vector<double> restrict_grid(const std::vector<double>& r, int n) {
+    // grid grosso tem n/2 intervalos e n/2 - 1 pontos interiores
+    int n_coarse = n / 2;
+    std::vector<double> r_coarse(n_coarse + 1, 0.0);
+    
+    // copia pontos pares (injecao)
+    for (int j = 1; j < n_coarse; j++) {
+        r_coarse[j] = r[2*j];
+    }
+    
+    return r_coarse;
+}
+
+
 int main(void) {
     int n = 8;   // numero de intervalos
     double L = 1.0; // dominio [0, L]
