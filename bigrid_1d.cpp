@@ -88,7 +88,7 @@ std::vector<double> prolongate(const std::vector<double>& e_coarse, int n_coarse
     return e_fine;
 }
 
-void solve_exact(std::vector<double>& e, const std::vector<double>& r, int n_coarse, double h_coarse) {
+void solve_coarse(std::vector<double>& e, const std::vector<double>& r, int n_coarse, double h_coarse) {
     std::fill(e.begin(), e.end(), 0.0);
     for (int k = 0; k < 1000; k++) {
         gauss_seidel(e, r, n_coarse, h_coarse);
@@ -112,7 +112,7 @@ void bigrid_cycle(std::vector<double>& u, const std::vector<double>& f, int n, d
 
     // 4. resolve no grid grosso
     std::vector<double> e_coarse(n_coarse + 1, 0.0);
-    solve_exact(e_coarse, r_coarse, n_coarse, h_coarse);
+    solve_coarse(e_coarse, r_coarse, n_coarse, h_coarse);
 
     // 5. prolongamento: leva correcao de volta para grid fino
     std::vector<double> e_fine = prolongate(e_coarse, n_coarse);
