@@ -105,10 +105,17 @@ void solve_coarse(Grid& coarse) {
     }
 }
 
-void bigrid_cycle(Grid& grid) {
+void v_cycle(Grid& grid) {
+    // Condicao de parada: grid com 1 ponto interior
+    if (grid.n == 2) {
+        solve_coarse(grid);
+        return;
+    }
+
     // 1. pre-suavizacao
     for (int k = 0; k < 2; k++)
         jacobi_amortecido(grid);
+
 
     // 2. calcula residuo no grid fino
     std::vector<double> r(grid.n + 1, 0.0);
@@ -122,7 +129,7 @@ void bigrid_cycle(Grid& grid) {
     // 4. resolve no grid grosso
     Grid coarse_grid(n_coarse, 1.0);
     coarse_grid.f = r_coarse;
-    solve_coarse(coarse_grid);
+    v_cycle(coarse_grid);
 
     // 5. prolongamento: leva correcao de volta para grid fino
     std::vector<double> e_fine = prolongate(coarse_grid.u, n_coarse);
@@ -138,7 +145,7 @@ void bigrid_cycle(Grid& grid) {
 
 int main(void) {
     // cria grid com 8 intervalos em [0, 1]
-    Grid grid(8, 1.0);
+    Grid grid(128, 1.0);
 
     // preenche f
     for (int i = 1; i < grid.n; i++) {
@@ -158,7 +165,7 @@ int main(void) {
         // sor(u, f, n, h, 1.9);
         // gauss_seidel_rb(u, f, n, h);
         // std::cout << "residuo: " << residual(u, f, n, h) << std::endl;
-        bigrid_cycle(grid);
+        v_cycle(grid);
         std::cout << "residuo: " << residual(grid) << std::endl;
     }
     std::cout << "residuo final: " << residual(grid) << std::endl;
@@ -170,6 +177,4 @@ int main(void) {
     }
 
     return 0;
-
-
 }
