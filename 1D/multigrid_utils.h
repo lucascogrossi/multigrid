@@ -27,9 +27,10 @@ inline std::vector<double> restrict(const std::vector<double>& r, int  n) {
     int n_coarse = n / 2;
     std::vector<double> r_coarse(n_coarse + 1, 0.0);
     
-    // copia pontos pares (injecao)
+    // copia pontos pares (full weighting)
     for (int j = 1; j < n_coarse; j++) {
-        r_coarse[j] = r[2*j];
+        r_coarse[j] = 0.25*r[2*j - 1] + 0.5*r[2*j] + 0.25*r[2*j + 1];
+
     }
     
     return r_coarse;
