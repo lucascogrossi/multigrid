@@ -138,7 +138,7 @@ void bigrid_cycle(Grid& grid) {
 
 int main(void) {
     // cria grid com 8 intervalos em [0, 1]
-    Grid grid(8, 1.0);
+    Grid grid(128, 1.0);
 
     // preenche f
     for (int i = 1; i < grid.n; i++) {

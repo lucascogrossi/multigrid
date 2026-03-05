@@ -142,3 +142,43 @@ u(0.625) = 0.117187
 u(0.75) = 0.09375
 u(0.875) = 0.0546875
 u(1) = 0
+
+
+====================
+Multigrid v ciclo vs bigrid
+n = 128
+jacobi_amortecido
+K = 10
+
+MULTIGRID:
+
+./multigrid_1d 
+residuo: 1.25673
+residuo: 0.142353
+residuo: 0.0162202
+residuo: 0.00185551
+residuo: 0.000212888
+residuo: 2.44822e-05
+residuo: 2.82083e-06
+residuo: 3.25536e-07
+residuo: 3.76202e-08
+residuo: 4.35256e-09
+residuo final: 4.35256e-09
+
+BIGRID:
+
+./bigrid_1d 
+residuo: 1.46088
+residuo: 0.214457
+residuo: 0.0327292
+residuo: 0.00505139
+residuo: 0.000783744
+residuo: 0.000121778
+residuo: 1.89454e-05
+residuo: 2.94783e-06
+residuo: 4.5884e-07
+residuo: 7.14165e-08
+residuo final: 7.14165e-08
+
+
+
