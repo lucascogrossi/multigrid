@@ -1,9 +1,3 @@
-/*
-TODO:
-- injecao -> full weighting
-- thomas algorithm on solve_coarse
-*/
-
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -54,7 +48,6 @@ int main(void) {
 
     // preenche f
     for (int i = 1; i < grid.n; i++) {
-        double x = i * grid.h;
         grid.f[i] = 1.0; // −uxx = 1
                          // a solucao analitica exata eh:
                          // u(x) = (x * (1 - x)) / 2
