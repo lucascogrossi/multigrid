@@ -7,18 +7,29 @@
 #include "smoothers_2d.h"
 
 
-inline std::vector<double> compute_residual(Grid& grid) {
-    std::vector<double> r(grid.n + 1, 0.0);
-    for (int i = 1; i < grid.n; i++)
-        r[i] = grid.f[i] - (-grid.u[i-1] + 2*grid.u[i] - grid.u[i+1]) / (grid.h*grid.h);
+inline std::vector<double> compute_residual(Grid2D& grid) {
+    std::vector<double> r((grid.nx+1) * (grid.ny+1), 0.0);
+    for (int i = 1; i < grid.nx; i++) {
+        for (int j = 1; j < grid.ny; j++) {
+            double Au_ij = (-grid.u[grid.idx(i-1,j)]
+                            -grid.u[grid.idx(i,j-1)]
+                            +4*grid.u[grid.idx(i,j)]
+                            -grid.u[grid.idx(i+1,j)]
+                            -grid.u[grid.idx(i,j+1)]) / (grid.hx*grid.hx);
+        r[grid.idx(i, j)] = grid.f[grid.idx(i, j)] - Au_ij;
+        }
+    }
     return r;
 }
 
-inline double residual_norm(Grid& grid) {
+inline double residual_norm(Grid2D& grid) {
     std::vector<double> r = compute_residual(grid);
     double norm = 0.0;
-    for (int i = 1; i < grid.n; i++)
-        norm += r[i] * r[i];
+    for (int i = 1; i < grid.nx; i++) {
+        for (int j = 1; j < grid.ny; j++) {
+            norm += r[grid.idx(i, j)] * r[grid.idx(i, j)];
+        }
+    }
     return sqrt(norm);
 }
 
