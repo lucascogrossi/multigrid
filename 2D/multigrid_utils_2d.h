@@ -29,7 +29,7 @@ inline double residual_norm(const Grid2D& grid) {
             norm += r[grid.idx(i, j)] * r[grid.idx(i, j)];
         }
     }
-    return sqrt(norm);
+    return sqrt(norm * grid.hx * grid.hy);
 }
 
 inline std::vector<double> restriction(const std::vector<double>& r, int nx, int ny) {
