@@ -2,9 +2,9 @@
 #define SMOOTHERS_H
 
 #include <vector>
-#include "grid_1d.h"
+#include "grid_2d.h"
 
-inline void jacobi(Grid& grid) {
+inline void jacobi(Grid2D& grid) {
     std::vector<double> u_new(grid.n + 1, 0.0);
 
     for (int i = 1; i < grid.n; i++) {
