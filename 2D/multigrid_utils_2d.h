@@ -39,10 +39,27 @@ inline std::vector<double> restrict(const std::vector<double>& r, int nx, int ny
     
     std::vector<double> r_coarse((nx_c+1) * (ny_c + 1), 0.0);
     
-    // Injecao (full-weighting TODO)
+    // Full weighting
+    // Pesos:
+    // 1  2  1
+    // 2  4  2   × (1/16)
+    // 1  2  1
     for (int i = 1; i < nx_c; i++) {
         for (int j = 1; j < ny_c; j++) {
-            r_coarse[i * (ny_c + 1) + j] = r[2*i*(ny+1) + 2*j];
+        int i_fine = 2*i;     // indice correspondente no grid fino
+        int j_fine = 2*j;
+
+        r_coarse[i*(ny_c+1) + j] =
+            (1.0/16.0) * (
+                // cantos (peso 1)
+                r[(i_fine-1)*(ny+1) + (j_fine-1)] + r[(i_fine-1)*(ny+1) + (j_fine+1)] +
+                r[(i_fine+1)*(ny+1) + (j_fine-1)] + r[(i_fine+1)*(ny+1) + (j_fine+1)] +
+                // arestas (peso 2)
+                2.0 * (r[(i_fine-1)*(ny+1) + j_fine] + r[(i_fine+1)*(ny+1) + j_fine] +
+                       r[i_fine*(ny+1) + (j_fine-1)] + r[i_fine*(ny+1) + (j_fine+1)]) +
+                // centro (peso 4)
+                4.0 * r[i_fine*(ny+1) + j_fine]
+            );
         }
     }
     return r_coarse;
@@ -80,7 +97,10 @@ inline std::vector<double> prolongate(const std::vector<double>& e_coarse, int n
 
 inline void solve_coarse(Grid2D& coarse) {
     std::fill(coarse.u.begin(), coarse.u.end(), 0.0);
-    gauss_seidel(coarse);
+
+    // descomentar para bigrid
+    // for (int k = 0; k < 1000; k++)
+        gauss_seidel(coarse);
 }
 
 #endif
