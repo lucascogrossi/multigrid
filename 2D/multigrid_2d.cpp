@@ -23,7 +23,7 @@ void v_cycle(Grid2D& grid) {
     // 3. restricao: leva residuo para grid grosso
     int nx_c = grid.nx / 2;
     int ny_c = grid.ny / 2;
-    std::vector<double> r_coarse = restrict(r, grid.nx, grid.ny);
+    std::vector<double> r_coarse = restriction(r, grid.nx, grid.ny);
 
     // 4. resolve no grid grosso
     Grid2D coarse_grid(nx_c, ny_c, grid.Lx, grid.Ly);
@@ -31,7 +31,7 @@ void v_cycle(Grid2D& grid) {
     v_cycle(coarse_grid);
 
     // 5. prolongamento: leva correcao de volta para grid fino
-    std::vector<double> e_fine = prolongate(coarse_grid.u, nx_c, ny_c);
+    std::vector<double> e_fine = prolongation(coarse_grid.u, nx_c, ny_c);
 
     // 6. corrige solucao
     for (int i = 1; i < grid.nx; i++)
