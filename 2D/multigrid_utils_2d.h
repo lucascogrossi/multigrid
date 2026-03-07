@@ -6,7 +6,7 @@
 #include "smoothers_2d.h"
 
 
-inline std::vector<double> compute_residual(Grid2D& grid) {
+inline std::vector<double> compute_residual(const Grid2D& grid) {
     std::vector<double> r((grid.nx+1) * (grid.ny+1), 0.0);
     double hx2 = grid.hx * grid.hx;
     double hy2 = grid.hy * grid.hy;
@@ -21,7 +21,7 @@ inline std::vector<double> compute_residual(Grid2D& grid) {
     return r;
 }
 
-inline double residual_norm(Grid2D& grid) {
+inline double residual_norm(const Grid2D& grid) {
     std::vector<double> r = compute_residual(grid);
     double norm = 0.0;
     for (int i = 1; i < grid.nx; i++) {
@@ -32,7 +32,7 @@ inline double residual_norm(Grid2D& grid) {
     return sqrt(norm);
 }
 
-inline std::vector<double> restrict(const std::vector<double>& r, int nx, int ny) {
+inline std::vector<double> restriction(const std::vector<double>& r, int nx, int ny) {
     // numero de intervalos do grid gross em cada direcao
     int nx_c = nx / 2;
     int ny_c = ny / 2;
@@ -65,7 +65,7 @@ inline std::vector<double> restrict(const std::vector<double>& r, int nx, int ny
     return r_coarse;
 }
 
-inline std::vector<double> prolongate(const std::vector<double>& e_coarse, int nx_c, int ny_c) {
+inline std::vector<double> prolongation(const std::vector<double>& e_coarse, int nx_c, int ny_c) {
     // grid fino tem n_coarse*2 intervalos
     int nx_f = nx_c * 2;
     int ny_f = ny_c * 2;
