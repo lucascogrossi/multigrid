@@ -69,3 +69,5 @@ Testing/
 .cache/
 bigrid_1d
 multigrid_1d
+2D/bigrid_2d
+2D/multigrid_2d
