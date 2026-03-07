@@ -64,14 +64,28 @@ inline void sor(Grid2D& grid, double omega) {
     }
 }
 
-inline void gauss_seidel_rb(Grid& grid) {
-    // vermelho: indices impares
-    for (int i = 1; i < grid.n; i += 2) {
-        grid.u[i] = (grid.u[i-1] + grid.u[i+1]) / 2.0 + (grid.h*grid.h / 2.0) * grid.f[i];
+inline void gauss_seidel_rb(Grid2D& grid) {
+    // vermelho: indices pares
+    for (int i = 1; i < grid.nx; i++) {
+        for (int j = 1; j < grid.ny; j++) {
+            if ((i + j) % 2 == 0) {
+                grid.u[grid.idx(i, j)] = (grid.u[grid.idx(i-1, j)] +
+                                          grid.u[grid.idx(i+1, j)] +
+                                          grid.u[grid.idx(i, j-1)] +
+                                          grid.u[grid.idx(i, j+1)]) / 4.0 +
+                                         (grid.hx*grid.hx / 4.0) * grid.f[grid.idx(i,j)];
+            }
+        }
     }
-    // preto: indices pares
-    for (int i = 2; i < grid.n; i += 2) {
-        grid.u[i] = (grid.u[i-1] + grid.u[i+1]) / 2.0 + (grid.h*grid.h / 2.0) * grid.f[i];
+    // preto: indices impares
+    for (int i = 1; i < grid.nx; i++) {
+        for (int j = 1; j < grid.ny; j++)
+            if ((i + j) % 2 != 0)
+        grid.u[grid.idx(i, j)] = (grid.u[grid.idx(i-1, j)] +
+                                  grid.u[grid.idx(i+1, j)] +
+                                  grid.u[grid.idx(i, j-1)] +
+                                  grid.u[grid.idx(i, j+1)]) / 4.0 +
+                                (grid.hx*grid.hx / 4.0) * grid.f[grid.idx(i,j)];
     }
 }
 
