@@ -1,0 +1,39 @@
+Bigrid 2D vs Multigrid 2D
+
+f = 2π²sin(πx)sin(πy)
+128 pontos
+k = 10
+
+=========
+BIGRID:
+
+lukas@ciri:~/multigrid/2D$ ./bigrid_2d 
+residuo k = 0 113.559
+residuo k = 1 10.1869
+residuo k = 2 0.913745
+residuo k = 3 0.0819609
+residuo k = 4 0.0073517
+residuo k = 5 0.000659431
+residuo k = 6 5.91495e-05
+residuo k = 7 5.30556e-06
+residuo k = 8 4.75869e-07
+residuo k = 9 4.26896e-08
+residuo final: 4.26896e-08
+
+
+======================
+MULTIGRID:
+
+lukas@ciri:~/multigrid/2D$ ./multigrid_2d 
+residuo k = 0 39.5878
+residuo k = 1 1.24171
+residuo k = 2 0.0389541
+residuo k = 3 0.00122208
+residuo k = 4 3.83394e-05
+residuo k = 5 1.20281e-06
+residuo k = 6 3.77667e-08
+residuo k = 7 1.25755e-09
+residuo k = 8 4.37905e-10
+residuo k = 9 4.6523e-10
+residuo final: 4.6523e-10
+lukas@ciri:~/multigrid/2D$ 

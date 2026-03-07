@@ -8,7 +8,7 @@
 
 void bigrid_cycle(Grid2D& grid) {
     // 1. pre-suavizacao
-    for (int k = 0; k < 2; k++)
+    for (int k = 0; k < 5; k++)
         jacobi_amortecido(grid);
 
     // 2. calcula residuo no grid fino
@@ -34,13 +34,13 @@ void bigrid_cycle(Grid2D& grid) {
         }
 
     // 7. pos-suavizacao
-    for (int k = 0; k < 2; k++)
+    for (int k = 0; k < 5; k++)
         jacobi_amortecido(grid);
 }
 
 int main(void) {
-    // cria grid com 8 intervalos em cada direcao em [0, 1] x [0, 1]
-    Grid2D grid(8, 8, 1.0, 1.0);
+    // cria grid com 128 intervalos em cada direcao em [0, 1] x [0, 1]
+    Grid2D grid(128, 128, 1.0, 1.0);
 
     
     // preenche f
@@ -59,6 +59,7 @@ int main(void) {
     }
     std::cout << "residuo final: " << residual_norm(grid) << std::endl;
 
+    /*
     std::cout << "\nSolucao aproximada:" << std::endl;
     for (int i = 0; i <= grid.nx; i++) {
         for (int j = 0; j <= grid.ny; j++) {
@@ -67,6 +68,7 @@ int main(void) {
             std::cout << "u(" << x << ", " << y << ") = " << grid.u[grid.idx(i,j)] << std::endl;
         }
     }
+    */
     return 0;
 
 
