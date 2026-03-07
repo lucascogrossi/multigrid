@@ -80,9 +80,7 @@ inline std::vector<double> prolongate(const std::vector<double>& e_coarse, int n
 
 inline void solve_coarse(Grid2D& coarse) {
     std::fill(coarse.u.begin(), coarse.u.end(), 0.0);
-    for (int k = 0; k < 1000; k++) {
-        gauss_seidel(coarse);
-    }
+    gauss_seidel(coarse);
 }
 
 #endif
