@@ -49,19 +49,32 @@ inline std::vector<double> restrict(const std::vector<double>& r, int nx, int ny
     return r_coarse;
 }
 
-inline std::vector<double> prolongate(const std::vector<double>& e_coarse, int n_coarse) {
+inline std::vector<double> prolongate(const std::vector<double>& e_coarse, int nx_c, int ny_c) {
     // grid fino tem n_coarse*2 intervalos
-    int n_fine = n_coarse * 2;
-    std::vector<double> e_fine(n_fine + 1, 0.0);
+    int nx_f = nx_c * 2;
+    int ny_f = ny_c * 2;
+    std::vector<double> e_fine((nx_f+1) * (ny_f+1), 0.0);
 
-    for (int j = 0; j < n_coarse; j++) {
-        // pontos pares (copia direto)
-        e_fine[2*j] = e_coarse[j];
-        // pontos impares  (media dos vizinhos; interpolacao linear entre 2 pontos)
-        e_fine[2*j+1] = (e_coarse[j] + e_coarse[j+1]) / 2.0;
+    // Interpolacao linear
+    for (int i = 0; i <= nx_c; i++) {
+        for (int j = 0; j <= ny_c; j++) {
+            // caso 1: copia direto
+            e_fine[2*i*(ny_f+1) + 2*j] = e_coarse[i*(ny_c+1) + j];
+
+            // caso 2: media horizontal
+            if (j < ny_c)
+                e_fine[2*i*(ny_f+1) + 2*j+1] = (e_coarse[i*(ny_c+1) + j] + e_coarse[i*(ny_c+1) + j+1]) / 2.0;
+            
+            // caso 3: media vertical
+            if (i < nx_c)
+                 e_fine[(2*i+1)*(ny_f+1) + 2*j] = (e_coarse[i*(ny_c+1) + j] + e_coarse[(i+1)*(ny_c+1) + j]) / 2.0;
+            
+            // caso 4: media dos 4 vizinhos
+            if (i < nx_c && j < ny_c)
+                e_fine[(2*i+1)*(ny_f+1) + 2*j+1] = (e_coarse[i*(ny_c+1) + j] + e_coarse[i*(ny_c+1) + j+1] +
+                                                    e_coarse[(i+1)*(ny_c+1) + j] + e_coarse[(i+1)*(ny_c+1) + j+1]) / 4.0;
+        }
     }
-    // copia o ultimo ponto
-    e_fine[n_fine] = e_coarse[n_coarse];
 
     return e_fine;
 }
