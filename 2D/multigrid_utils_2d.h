@@ -1,6 +1,5 @@
-#ifndef MULTIGRID_UTILS_H
-#define MULTIGRID_UTILS_H
-
+#ifndef MULTIGRID_UTILS_2D_H
+#define MULTIGRID_UTILS_2D_H
 #include <cmath>
 
 #include "grid_2d.h"

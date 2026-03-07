@@ -1,5 +1,5 @@
-#ifndef SMOOTHERS_H
-#define SMOOTHERS_H
+#ifndef SMOOTHERS_2D_H
+#define SMOOTHERS_2D_H
 
 #include <vector>
 #include "grid_2d.h"
