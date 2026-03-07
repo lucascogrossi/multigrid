@@ -5,10 +5,16 @@
 #include "grid_2d.h"
 
 inline void jacobi(Grid2D& grid) {
-    std::vector<double> u_new(grid.n + 1, 0.0);
+    std::vector<double> u_new((grid.nx+1) * (grid.ny+1), 0.0);
 
-    for (int i = 1; i < grid.n; i++) {
-        u_new[i] = (grid.u[i-1] + grid.u[i+1]) / 2.0 + (grid.h*grid.h / 2.0) * grid.f[i];
+    for (int i = 1; i < grid.nx; i++) {
+        for (int j = 1; j < grid.ny; j++) {
+            u_new[grid.idx(i, j)] = (grid.u[grid.idx(i-1, j)] +
+                                     grid.u[grid.idx(i+1, j)] +
+                                     grid.u[grid.idx(i, j-1)] +
+                                     grid.u[grid.idx(i, j+1)]) / 4.0 +
+                                     (grid.hx*grid.hx / 4.0) * grid.f[grid.idx(i,j)];
+        }
     }
     grid.u = u_new;
 }
