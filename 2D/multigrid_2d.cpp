@@ -37,16 +37,38 @@ void v_cycle(Grid2D& grid) {
     for (int i = 1; i < grid.nx; i++)
         for (int j = 1; j < grid.ny; j++) {
             grid.u[grid.idx(i, j)] += e_fine[grid.idx(i, j)];
-        }
+        }       
 
     // 7. pos-suavizacao
     for (int k = 0; k < 5; k++)
         jacobi_amortecido(grid);
 }
 
-int main(void) {
-    // cria grid com 128 intervalos em cada direcao em [0, 1] x [0, 1]
-    Grid2D grid(128, 128, 1.0, 1.0);
+int main(int argc, char* argv[]) {
+
+    // usage: ./multigrid --n [grid size] --smoother [smoother] --vcycles [k]
+    // ex:    ./multigrid --n 128 --smoother jacobi --vcycles 10
+
+    int n;
+    std::string smoother;
+    int vcyles;
+
+    for (int i = 1; i < argc; i++) {
+        if (std::string(argv[i]) == "--n")
+            n = std::atoi(argv[++i]);
+        
+        else if (std::string(argv[i]) == "--smoother")
+            smoother = argv[++i];
+
+        else if (std::string(argv[i]) == "--vcycles")
+            vcyles = std::atoi(argv[++i]);
+
+    }
+
+    std::cout << n << " " << smoother << " " << vcyles << std::endl;
+
+    // cria grid com n intervalos em cada direcao em [0, 1] x [0, 1]
+    Grid2D grid(n, n, 1.0, 1.0);
 
     
     // preenche f
@@ -59,7 +81,7 @@ int main(void) {
         }
     }
 
-    for (int k = 0; k < 10; k++) {
+    for (int k = 0; k < vcyles; k++) {
         v_cycle(grid);
         std::cout << "residuo " << "k = " << k << " " << residual_norm(grid) << std::endl;
     }
