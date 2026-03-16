@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
             n = std::atoi(argv[++i]);     
         else if (std::string(argv[i]) == "--smoother")
             smoother = argv[++i];
-        else if (std::string(argv[i]) == "--vcycles")
+        else if (std::string(argv[i]) == "--vcycles") // TODO condicao de parada por convergencia minima
             vcyles = std::atoi(argv[++i]);
         else {
             std::cout << "usage: ./multigrid --n [grid size] --smoother [smoother] --vcycles [k]" << std::endl;
