@@ -48,24 +48,25 @@ void v_cycle(Grid2D& grid, Smoother smooth) {
 }
 
 void print_usage() {
-    std::cout << "Uso: ./multigrid_2d --n <grid_size> --smoother <smoother> --vcycles <k>\n"
+    std::cout << "Uso: ./multigrid_2d --n <grid_size> --smoother <smoother> [--tol <tolerancia>]\n"
               << "\n"
               << "Argumentos:\n"
               << "  --n         Tamanho do grid (potencia de 2: 64, 128, 256, ...)\n"
               << "  --smoother  Metodo de suavizacao:\n"
               << "                jacobi, jacobi_amortecido, gauss_seidel,\n"
               << "                gauss_seidel_rb, sor\n"
-              << "  --vcycles   Numero de V-cycles\n"
+              << "  --tol       Tolerancia para convergencia (default: 1e-10)\n"
               << "\n"
               << "Exemplo:\n"
-              << "  ./multigrid_2d --n 256 --smoother gauss_seidel_rb --vcycles 10\n";
+              << "  ./multigrid_2d --n 256 --smoother gauss_seidel_rb --tol 1e-8\n";
 }
 
 int main(int argc, char* argv[]) {
 
     int n = 0;
     std::string smoother_name;
-    int vcycles = 0;
+    double tol = 1e-10;
+    int max_vcycles = 200;
 
     // parse de argumentos
     for (int i = 1; i < argc; i++) {
@@ -74,8 +75,8 @@ int main(int argc, char* argv[]) {
             n = std::atoi(argv[++i]);
         else if (arg == "--smoother" && i + 1 < argc)
             smoother_name = argv[++i];
-        else if (arg == "--vcycles" && i + 1 < argc)
-            vcycles = std::atoi(argv[++i]);
+        else if (arg == "--tol" && i + 1 < argc)
+            tol = std::atof(argv[++i]);
         else if (arg == "--help" || arg == "-h") {
             print_usage();
             return 0;
@@ -88,8 +89,8 @@ int main(int argc, char* argv[]) {
     }
 
     // valida argumentos obrigatorios
-    if (n == 0 || smoother_name.empty() || vcycles == 0) {
-        std::cerr << "Erro: --n, --smoother e --vcycles sao obrigatorios.\n\n";
+    if (n == 0 || smoother_name.empty()) {
+        std::cerr << "Erro: --n e --smoother sao obrigatorios.\n\n";
         print_usage();
         return 1;
     }
@@ -114,7 +115,7 @@ int main(int argc, char* argv[]) {
     std::cout << "\n=== Multigrid V-cycle 2D ===\n"
               << "grid:     " << n << "x" << n << " em [0,1]x[0,1]\n"
               << "smoother: " << smoother_name << "\n"
-              << "vcycles:  " << vcycles << "\n\n";
+              << "tol:      " << tol << "\n\n";
 
     // cria grid com n intervalos em cada direcao em [0, 1] x [0, 1]
     Grid2D grid(n, n, 1.0, 1.0);
@@ -129,22 +130,23 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // Benchmark
-    for (int k = 1; k <= vcycles; k++) {
+    // resolve com V-cycles ate convergir
+    int k;
+    for (k = 1; k <= max_vcycles; k++) {
         v_cycle(grid, smooth);
-        std::cout << "residuo " << "k = " << k << " " << residual_norm(grid) << std::endl;
+        double res = residual_norm(grid);
+        std::cout << "v-cycle " << k << "  residuo = " << res << std::endl;
+
+        if (res < tol) {
+            std::cout << "\nConvergiu em " << k << " v-cycles.\n";
+            break;
+        }
     }
-    std::cout << "\n";
-    std::cout << "residuo final: " << residual_norm(grid) << std::endl;
-    // std::cout << "Tempo (ms): " << time << std::endl;
-  
-    // std::cout << "\nSolucao aproximada:" << std::endl;
-    // for (int i = 0; i <= grid.nx; i++) {
-    //     for (int j = 0; j <= grid.ny; j++) {
-    //         double x = i * grid.hx;
-    //         double y = j * grid.hy;
-    //         std::cout << "u(" << x << ", " << y << ") = " << grid.u[grid.idx(i,j)] << std::endl;
-    //     }
-    // }
+
+    if (k > max_vcycles)
+        std::cout << "\nAVISO: nao convergiu em " << max_vcycles << " v-cycles.\n";
+
+    std::cout << "\nresiduo final: " << residual_norm(grid) << std::endl;
+
     return 0;
 }
