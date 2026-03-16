@@ -107,5 +107,4 @@ inline void gauss_seidel_coluna(Grid2D& grid) {
     return;
 }
 
-
 #endif

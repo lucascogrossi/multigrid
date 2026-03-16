@@ -13,4 +13,11 @@ Single grid:
 Multigrid:
     nx = ny = 64, 128, 256, 512, 1024, 2048:
     - serial x paralelo
+    - Jacobi
+    - Jacobi amortecido
+    - Gauss-Seidel
+    - SOR
+    - Gauss-Seidel Red Black
+    - Gauss-Seidel Linha
+    - Gauss-Seidel Coluna
     

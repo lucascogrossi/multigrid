@@ -64,12 +64,29 @@ int main(int argc, char* argv[]) {
         else if (std::string(argv[i]) == "--vcycles")
             vcyles = std::atoi(argv[++i]);
         else {
-            std::cout << " usage: ./multigrid --n [grid size] --smoother [smoother] --vcycles [k]" << std::endl;
+            std::cout << "usage: ./multigrid --n [grid size] --smoother [smoother] --vcycles [k]" << std::endl;
             return 1;
         }
     }
 
-    std::cout << "\n" << "grid " << n << "x"<< n <<" em [0, 1]x[0, 1]" << std::endl;
+    // seleciona smoother a partir do argumento
+    Smoother smooth;
+    if (smoother == "jacobi")
+        smooth = jacobi;
+    else if (smoother == "jacobi_amortecido")
+        smooth = jacobi_amortecido;
+    else if (smoother == "gauss_seidel")
+        smooth = gauss_seidel;
+    else if (smoother == "gauss_seidel_rb")
+        smooth = gauss_seidel_rb;
+    // else if (smoother == "sor")
+    //     smooth = sor;
+    else {
+        std::cout << "smoother inválido: " << smoother << std::endl;
+        return 1;
+    }
+
+    std::cout << "\n" << "grid " << n << "x"<< n <<" em [0,1]x[0,1]" << std::endl;
     std::cout << "smoother: " << smoother << std::endl;
     std::cout << "vcycles: " << vcyles << std::endl;
     std::cout << "\n";
@@ -82,21 +99,6 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     std::cout << "\n";
-
-    // seleciona smoother a partir do argumento
-    Smoother smooth;
-    if (smoother == "jacobi")
-        smooth = jacobi;
-    else if (smoother == "jacobi_amortecido")
-        smooth = jacobi_amortecido;
-    else if (smoother == "gauss_seidel")
-        smooth = gauss_seidel;
-    else if (smoother == "gauss_seidel_rb")
-        smooth = gauss_seidel_rb;
-    else {
-        std::cout << "smoother inválido: " << smoother << std::endl;
-        return 1;
-    }
 
     // cria grid com n intervalos em cada direcao em [0, 1] x [0, 1]
     Grid2D grid(n, n, 1.0, 1.0);
@@ -111,23 +113,22 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    // Benchmark
     for (int k = 1; k <= vcyles; k++) {
         v_cycle(grid, smooth);
         std::cout << "residuo " << "k = " << k << " " << residual_norm(grid) << std::endl;
     }
     std::cout << "\n";
     std::cout << "residuo final: " << residual_norm(grid) << std::endl;
-
-    /*
-    std::cout << "\nSolucao aproximada:" << std::endl;
-    for (int i = 0; i <= grid.nx; i++) {
-        for (int j = 0; j <= grid.ny; j++) {
-            double x = i * grid.hx;
-            double y = j * grid.hy;
-            std::cout << "u(" << x << ", " << y << ") = " << grid.u[grid.idx(i,j)] << std::endl;
-        }
-    }
-    */
-
+    // std::cout << "Tempo (ms): " << time << std::endl;
+  
+    // std::cout << "\nSolucao aproximada:" << std::endl;
+    // for (int i = 0; i <= grid.nx; i++) {
+    //     for (int j = 0; j <= grid.ny; j++) {
+    //         double x = i * grid.hx;
+    //         double y = j * grid.hy;
+    //         std::cout << "u(" << x << ", " << y << ") = " << grid.u[grid.idx(i,j)] << std::endl;
+    //     }
+    // }
     return 0;
 }
