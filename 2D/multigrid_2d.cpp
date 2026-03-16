@@ -11,7 +11,6 @@
 using Smoother = std::function<void(Grid2D&)>;
 
 void v_cycle(Grid2D& grid, Smoother smooth) {
-    // Condicao de parada: grid com 1 ponto interior (1,1) cercado pela fronteira
     if (grid.nx == 2 && grid.ny == 2) {
         solve_coarse(grid);
         return;
@@ -39,9 +38,8 @@ void v_cycle(Grid2D& grid, Smoother smooth) {
 
     // 6. corrige solucao
     for (int i = 1; i < grid.nx; i++)
-        for (int j = 1; j < grid.ny; j++) {
+        for (int j = 1; j < grid.ny; j++)
             grid.u[grid.idx(i, j)] += e_fine[grid.idx(i, j)];
-        }
 
     // 7. pos-suavizacao
     for (int k = 0; k < 5; k++)
@@ -118,16 +116,16 @@ int main(int argc, char* argv[]) {
               << "smoother: " << smoother_name << "\n"
               << "tol:      " << tol << "\n\n";
 
-    // cria grid com n intervalos em cada direcao em [0, 1] x [0, 1]
+    // cria grid com n intervalos em cada direcao
     Grid2D grid(n, n, 1.0, 1.0);
 
-    // preenche f
+    // Equação: −∇²u(x,y) = 2π²sin(πx)sin(πy)
+    // Solução analítica: u(x,y) = sin(πx) sin(πy)
     for (int i = 1; i < grid.nx; i++) {
         for (int j = 1; j < grid.ny; j++) {
             double x = i * grid.hx;
             double y = j * grid.hy;
-            grid.f[grid.idx(i, j)] = 2 * M_PI * M_PI * sin(M_PI * x) * sin(M_PI * y);
-            // solucao analitica: u(x,y) = sin(pi*x) * sin(pi*y)
+            grid.f[grid.idx(i, j)] = 2.0 * M_PI * M_PI * sin(M_PI * x) * sin(M_PI * y);
         }
     }
 
