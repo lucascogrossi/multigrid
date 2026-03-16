@@ -46,8 +46,8 @@ void v_cycle(Grid2D& grid) {
 
 int main(int argc, char* argv[]) {
 
-    // usage: ./multigrid --n [grid size] --smoother [smoother] --vcycles [k]
-    // ex:    ./multigrid --n 128 --smoother jacobi --vcycles 10
+    // usage: ./multigrid_2d --n [grid size] --smoother [smoother] --vcycles [k]
+    // ex:    ./multigrid_2d --n 128 --smoother jacobi --vcycles 10
 
     int n;
     std::string smoother;
@@ -55,17 +55,30 @@ int main(int argc, char* argv[]) {
 
     for (int i = 1; i < argc; i++) {
         if (std::string(argv[i]) == "--n")
-            n = std::atoi(argv[++i]);
-        
+            n = std::atoi(argv[++i]);     
         else if (std::string(argv[i]) == "--smoother")
             smoother = argv[++i];
-
         else if (std::string(argv[i]) == "--vcycles")
             vcyles = std::atoi(argv[++i]);
-
+        else {
+            std::cout << " usage: ./multigrid --n [grid size] --smoother [smoother] --vcycles [k]" << std::endl;
+            return 1;
+        }
     }
 
-    std::cout << n << " " << smoother << " " << vcyles << std::endl;
+    std::cout << "\n" << "grid " << n << "x"<< n <<" em [0, 1]x[0, 1]" << std::endl;
+    std::cout << "smoother: " << smoother << std::endl;
+    std::cout << "vcycles: " << vcyles << std::endl;
+    std::cout << "\n";
+
+    std::cout << "Deseja prosseguir com a simulação? (y/n) ";
+    char answ;
+    std::cin >> answ;
+    if (answ == 'n') {
+        std::cout << "Cancelado." << std::endl;
+        return 1;
+    }
+    std::cout << "\n";
 
     // cria grid com n intervalos em cada direcao em [0, 1] x [0, 1]
     Grid2D grid(n, n, 1.0, 1.0);
@@ -81,10 +94,11 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    for (int k = 0; k < vcyles; k++) {
+    for (int k = 1; k <= vcyles; k++) {
         v_cycle(grid);
         std::cout << "residuo " << "k = " << k << " " << residual_norm(grid) << std::endl;
     }
+    std::cout << "\n";
     std::cout << "residuo final: " << residual_norm(grid) << std::endl;
 
     /*
