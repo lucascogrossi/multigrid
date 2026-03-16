@@ -63,57 +63,58 @@ void print_usage() {
 
 int main(int argc, char* argv[]) {
 
-    int n;
-    std::string smoother;
-    int vcyles;
+    int n = 0;
+    std::string smoother_name;
+    int vcycles = 0;
 
+    // parse de argumentos
     for (int i = 1; i < argc; i++) {
-        if (std::string(argv[i]) == "--n")
+        std::string arg = argv[i];
+        if (arg == "--n" && i + 1 < argc)
             n = std::atoi(argv[++i]);
-        else if (std::string(argv[i]) == "--smoother")
-            smoother = argv[++i];
-        else if (std::string(argv[i]) == "--vcycles")
-            vcyles = std::atoi(argv[++i]);
-        else if (std::string(argv[i]) == "--help" || std::string(argv[i]) == "-h") {
+        else if (arg == "--smoother" && i + 1 < argc)
+            smoother_name = argv[++i];
+        else if (arg == "--vcycles" && i + 1 < argc)
+            vcycles = std::atoi(argv[++i]);
+        else if (arg == "--help" || arg == "-h") {
             print_usage();
             return 0;
         }
         else {
+            std::cerr << "Argumento desconhecido: " << arg << "\n\n";
             print_usage();
             return 1;
         }
     }
 
-    // seleciona smoother a partir do argumento
+    // valida argumentos obrigatorios
+    if (n == 0 || smoother_name.empty() || vcycles == 0) {
+        std::cerr << "Erro: --n, --smoother e --vcycles sao obrigatorios.\n\n";
+        print_usage();
+        return 1;
+    }
+
+    // seleciona smoother
     Smoother smooth;
-    if (smoother == "jacobi")
+    if (smoother_name == "jacobi")
         smooth = jacobi;
-    else if (smoother == "jacobi_amortecido")
+    else if (smoother_name == "jacobi_amortecido")
         smooth = jacobi_amortecido;
-    else if (smoother == "gauss_seidel")
+    else if (smoother_name == "gauss_seidel")
         smooth = gauss_seidel;
-    else if (smoother == "gauss_seidel_rb")
+    else if (smoother_name == "gauss_seidel_rb")
         smooth = gauss_seidel_rb;
-    else if (smoother == "sor")
+    else if (smoother_name == "sor")
         smooth = sor;
     else {
-        std::cout << "smoother inválido: " << smoother << std::endl;
+        std::cerr << "Smoother invalido: " << smoother_name << "\n";
         return 1;
     }
 
-    std::cout << "\n" << "grid " << n << "x"<< n <<" em [0,1]x[0,1]" << std::endl;
-    std::cout << "smoother: " << smoother << std::endl;
-    std::cout << "vcycles: " << vcyles << std::endl;
-    std::cout << "\n";
-
-    std::cout << "Deseja prosseguir com a simulação? (y/n) ";
-    char answ;
-    std::cin >> answ;
-    if (answ == 'n' || answ == 'N') {
-        std::cout << "Cancelado." << std::endl;
-        return 1;
-    }
-    std::cout << "\n";
+    std::cout << "\n=== Multigrid V-cycle 2D ===\n"
+              << "grid:     " << n << "x" << n << " em [0,1]x[0,1]\n"
+              << "smoother: " << smoother_name << "\n"
+              << "vcycles:  " << vcycles << "\n\n";
 
     // cria grid com n intervalos em cada direcao em [0, 1] x [0, 1]
     Grid2D grid(n, n, 1.0, 1.0);
@@ -129,7 +130,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Benchmark
-    for (int k = 1; k <= vcyles; k++) {
+    for (int k = 1; k <= vcycles; k++) {
         v_cycle(grid, smooth);
         std::cout << "residuo " << "k = " << k << " " << residual_norm(grid) << std::endl;
     }
