@@ -17,7 +17,7 @@ void v_cycle(Grid2D& grid, Smoother smooth) {
     }
 
     // 1. pre-suavizacao
-    for (int k = 0; k < 5; k++)
+    for (int k = 0; k < 2; k++)
         smooth(grid);
 
     // 2. calcula residuo no grid fino
@@ -42,7 +42,7 @@ void v_cycle(Grid2D& grid, Smoother smooth) {
             grid.u[grid.idx(i, j)] += e_fine[grid.idx(i, j)];
 
     // 7. pos-suavizacao
-    for (int k = 0; k < 5; k++)
+    for (int k = 0; k < 2; k++)
         smooth(grid);
 }
 
