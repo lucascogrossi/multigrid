@@ -79,8 +79,8 @@ int main(int argc, char* argv[]) {
         smooth = gauss_seidel;
     else if (smoother == "gauss_seidel_rb")
         smooth = gauss_seidel_rb;
-    // else if (smoother == "sor")
-    //     smooth = sor;
+    else if (smoother == "sor")
+        smooth = sor;
     else {
         std::cout << "smoother inválido: " << smoother << std::endl;
         return 1;

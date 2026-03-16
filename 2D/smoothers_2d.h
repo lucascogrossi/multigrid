@@ -55,7 +55,8 @@ inline void gauss_seidel(Grid2D& grid) {
 }
 
 // Gauss-Seidel Sobrerelaxado
-inline void sor(Grid2D& grid, double omega) {
+inline void sor(Grid2D& grid) {
+    double omega = 1.0;
     double hx2 = grid.hx * grid.hx;
     double hy2 = grid.hy * grid.hy;
     double diag = 2.0 * (1.0/hx2 + 1.0/hy2);
