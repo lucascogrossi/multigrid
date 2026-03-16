@@ -1,12 +1,15 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <functional>
 
 #include "smoothers_2d.h"
 #include "grid_2d.h"
 #include "multigrid_utils_2d.h"
 
-void v_cycle(Grid2D& grid) {
+using Smoother = std::function<void(Grid2D&)>;
+
+void v_cycle(Grid2D& grid, Smoother smooth) {
     // Condicao de parada: grid com 1 ponto interior (1,1) cercado pela fronteira
     if (grid.nx == 2 && grid.ny == 2) {
         solve_coarse(grid);
@@ -15,7 +18,7 @@ void v_cycle(Grid2D& grid) {
 
     // 1. pre-suavizacao
     for (int k = 0; k < 5; k++)
-        jacobi_amortecido(grid);
+        smooth(grid);
 
     // 2. calcula residuo no grid fino
     std::vector<double> r = compute_residual(grid);
@@ -28,7 +31,7 @@ void v_cycle(Grid2D& grid) {
     // 4. resolve no grid grosso
     Grid2D coarse_grid(nx_c, ny_c, grid.Lx, grid.Ly);
     coarse_grid.f = r_coarse;
-    v_cycle(coarse_grid);
+    v_cycle(coarse_grid, smooth);
 
     // 5. prolongamento: leva correcao de volta para grid fino
     std::vector<double> e_fine = prolongation(coarse_grid.u, nx_c, ny_c);
@@ -37,11 +40,11 @@ void v_cycle(Grid2D& grid) {
     for (int i = 1; i < grid.nx; i++)
         for (int j = 1; j < grid.ny; j++) {
             grid.u[grid.idx(i, j)] += e_fine[grid.idx(i, j)];
-        }       
+        }
 
     // 7. pos-suavizacao
     for (int k = 0; k < 5; k++)
-        jacobi_amortecido(grid);
+        smooth(grid);
 }
 
 int main(int argc, char* argv[]) {
@@ -74,16 +77,30 @@ int main(int argc, char* argv[]) {
     std::cout << "Deseja prosseguir com a simulação? (y/n) ";
     char answ;
     std::cin >> answ;
-    if (answ == 'n') {
+    if (answ == 'n' || answ == 'N') {
         std::cout << "Cancelado." << std::endl;
         return 1;
     }
     std::cout << "\n";
 
+    // seleciona smoother a partir do argumento
+    Smoother smooth;
+    if (smoother == "jacobi")
+        smooth = jacobi;
+    else if (smoother == "jacobi_amortecido")
+        smooth = jacobi_amortecido;
+    else if (smoother == "gauss_seidel")
+        smooth = gauss_seidel;
+    else if (smoother == "gauss_seidel_rb")
+        smooth = gauss_seidel_rb;
+    else {
+        std::cout << "smoother inválido: " << smoother << std::endl;
+        return 1;
+    }
+
     // cria grid com n intervalos em cada direcao em [0, 1] x [0, 1]
     Grid2D grid(n, n, 1.0, 1.0);
 
-    
     // preenche f
     for (int i = 1; i < grid.nx; i++) {
         for (int j = 1; j < grid.ny; j++) {
@@ -95,7 +112,7 @@ int main(int argc, char* argv[]) {
     }
 
     for (int k = 1; k <= vcyles; k++) {
-        v_cycle(grid);
+        v_cycle(grid, smooth);
         std::cout << "residuo " << "k = " << k << " " << residual_norm(grid) << std::endl;
     }
     std::cout << "\n";
@@ -110,8 +127,7 @@ int main(int argc, char* argv[]) {
             std::cout << "u(" << x << ", " << y << ") = " << grid.u[grid.idx(i,j)] << std::endl;
         }
     }
-        */
+    */
+
     return 0;
-
-
 }
