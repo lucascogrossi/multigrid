@@ -2,6 +2,7 @@
 #include <vector>
 #include <cmath>
 #include <functional>
+#include <chrono>
 
 #include "smoothers_2d.h"
 #include "grid_2d.h"
@@ -131,6 +132,8 @@ int main(int argc, char* argv[]) {
     }
 
     // resolve com V-cycles ate convergir
+    auto t_start = std::chrono::high_resolution_clock::now();
+
     int k;
     for (k = 1; k <= max_vcycles; k++) {
         v_cycle(grid, smooth);
@@ -143,10 +146,28 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    auto t_end = std::chrono::high_resolution_clock::now();
+    double elapsed_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
+
     if (k > max_vcycles)
         std::cout << "\nAVISO: nao convergiu em " << max_vcycles << " v-cycles.\n";
 
-    std::cout << "\nresiduo final: " << residual_norm(grid) << std::endl;
+    // calcula erro contra solucao analitica
+    double max_err = 0.0;
+    for (int i = 1; i < grid.nx; i++) {
+        for (int j = 1; j < grid.ny; j++) {
+            double x = i * grid.hx;
+            double y = j * grid.hy;
+            double u_exact = sin(M_PI * x) * sin(M_PI * y);
+            double err = fabs(grid.u[grid.idx(i, j)] - u_exact);
+            if (err > max_err) max_err = err;
+        }
+    }
+
+    std::cout << "\n=== Resultados ===\n"
+              << "residuo final:  " << residual_norm(grid) << "\n"
+              << "erro maximo:    " << max_err << "\n"
+              << "tempo total:    " << elapsed_ms << " ms\n";
 
     return 0;
 }
