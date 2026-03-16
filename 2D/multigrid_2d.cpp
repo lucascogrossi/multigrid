@@ -47,10 +47,21 @@ void v_cycle(Grid2D& grid, Smoother smooth) {
         smooth(grid);
 }
 
-int main(int argc, char* argv[]) {
+void print_usage() {
+    std::cout << "Uso: ./multigrid_2d --n <grid_size> --smoother <smoother> --vcycles <k>\n"
+              << "\n"
+              << "Argumentos:\n"
+              << "  --n         Tamanho do grid (potencia de 2: 64, 128, 256, ...)\n"
+              << "  --smoother  Metodo de suavizacao:\n"
+              << "                jacobi, jacobi_amortecido, gauss_seidel,\n"
+              << "                gauss_seidel_rb, sor\n"
+              << "  --vcycles   Numero de V-cycles\n"
+              << "\n"
+              << "Exemplo:\n"
+              << "  ./multigrid_2d --n 256 --smoother gauss_seidel_rb --vcycles 10\n";
+}
 
-    // usage: ./multigrid_2d --n [grid size] --smoother [smoother] --vcycles [k]
-    // ex:    ./multigrid_2d --n 128 --smoother jacobi --vcycles 10
+int main(int argc, char* argv[]) {
 
     int n;
     std::string smoother;
@@ -58,13 +69,17 @@ int main(int argc, char* argv[]) {
 
     for (int i = 1; i < argc; i++) {
         if (std::string(argv[i]) == "--n")
-            n = std::atoi(argv[++i]);     
+            n = std::atoi(argv[++i]);
         else if (std::string(argv[i]) == "--smoother")
             smoother = argv[++i];
-        else if (std::string(argv[i]) == "--vcycles") // TODO condicao de parada por convergencia minima
+        else if (std::string(argv[i]) == "--vcycles")
             vcyles = std::atoi(argv[++i]);
+        else if (std::string(argv[i]) == "--help" || std::string(argv[i]) == "-h") {
+            print_usage();
+            return 0;
+        }
         else {
-            std::cout << "usage: ./multigrid --n [grid size] --smoother [smoother] --vcycles [k]" << std::endl;
+            print_usage();
             return 1;
         }
     }
